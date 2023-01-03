@@ -1,0 +1,149 @@
+pipeline:
+
+CI:
+
+1. Application code.- build,unit test, healthchecks. build artifacts.
+2. Dockerfile
+ - Instructions to build code and runtime commands 
+3. Docker image build - > docker build -t <imagename>:<> .
+4. Docker image push to Private registries
+
+CD - 
+
+5. Docker run container by pulling image from private registry.
+
+========================
+docker compose : 
+Need to write compose yaml file
+
+To create multiple containers and enable communication between them.
+
+==================================
+Docker Image commads:
+
+docker pull - pulling image from remote registry to local
+docker push - pushing image to remote registry from local or other registries.
+docker build -t  -- to build image using Dockerfile
+
+Dockerfile - file iname should be "Dockerfile" without any extension.
+           - it contains Instructions to build image and run the commands inside container.
+
+==============================
+kubernetes -  it is container orchestration tool which maintain the container lifecyle.
+
+===========================================================================================
+Docker Images can be created in two ways:
+1. From running container - docker commit -t <imagename>:<tag> <container-id>
+2. Using Dockerfile - docker build -t <imagename>:<tag> .
+
+Need to write Instructions in Dockerfile and then execute the docker build command.
+
+Here are some important and regular used instructions:
+======================================================
+FROM : TO pull base image.
+RUN :  TO execute commands
+CMD :  To provide defaults commands for an executing container
+WORKDIR : To sets the working directory
+COPY : To copy the directory from local machine to the docker container
+ADD : TO copy the files and folders from local machine to container and it will download files from websites as well.
+EXPOSE: Informs docker that the container listens on the specified network ports ar runtime
+ENV : ENV instruction in Dockerfile sets the environment variable for your container when you start. The default value can be overridden by           	passing --env <key>=<value> when you start the container
+USER: to run commands in container.
+ENTRYPOINT: to execute commands on container once it is created or started. ENTRYPOINT values can not modified while creating containers.
+VOLUME: to create a volume inside the container and in dockerhost.
+LABEL: to write the description or metadata of the dockerfile.
+
+
+
+
+=======================================================
+
+
+Install tomcat on CentOs using Dockerfile and create Docker image:
+------------------------------------------------------------------
+#DOcker file instructions:
+++++++++++++++++++++++++++
+
+FROM centos # pulling base centos Image
+RUN sudo sed -i -e "s|mirrorlist=|#mirrorlist=|g" /etc/yum.repos.d/CentOS-* #Disable the mirrorlist url
+RUN sudo sed -i -e "s|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g" /etc/yum.repos.d/CentOS-* #Adding the vault centos to 																							#get the packages
+RUN yum install java -y #Installing Java
+RUN mkdir /opt/tomcat # Creating directory /opt/tomcat
+WORKDIR /opt/tomcat #make /opt/tomcat as current directory
+ADD https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.70/bin/apache-tomcat-9.0.70.tar.gz . #Download the tomcat to currecnt directory
+RUN tar -xvzf apache-tomcat-9.0.70.tar.gz . #Extract the tar files to local current directory
+RUN mv apache-tomcat-9.0.70/* /opt/tomcat #moving the tomcat libraries and binaries to current directory
+EXPOSE 8080 #Open the 8080 port to internet
+CMD ["/opt/tomcat/bin/catalina.sh","run"] #Start the tomcat service when container created.
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+run the below command to create docker image:
+---------------------------------------------
+
+docker build -t <image-name>:<tagname> .
+
+Example: docker build -t tomcatcentos:v1 .
+
+++++++++++++++++++++++++++++++++++++++++++++++
+
+#################################
+
+Difference Between COPY & ADD:
+
+################################
+
+COPY : To just move/copy the files/directory from the local host to container.
+ADD : To download files from website(using download urls) and it will extract the zip/gz files from localhost to container.
+       It will copy local files/directories like COPY instruction do.
+
+
+#################################
+
+Difference Between RUN & CMD:
+
+################################
+
+RUN : to execute the commands while building the docker image.
+CMD: to execute the commands in container when it starts or created.It can be used as argument for ENTRYPOINT.
+
+
+####################################
+
+Difference Between ENTRYPOINT & CMD:
+
+####################################
+
+Both will do the execution of commands when container is created or started. but main difference is ENTRYPOINT will not be modified while CMD can be replace while running the container.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

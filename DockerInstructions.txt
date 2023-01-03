@@ -1,0 +1,28 @@
+FROM - to pull base image
+WORKDIR - to set the current directory
+COPY - To copy local dierctory to container
+ADD - to copy local directory and get files from website.
+EXPOSE - To expose the port from container
+RUN  - To execute the commands
+CMD - To execute the commands in container at runtime
+ENTRYPOINT - TO make the container as executable when container starts.
+LABLE - To describe the properties
+ENV - Environment variables for Docker containers.
+
+Install Tomcat on Centos image using Dockerfile:
+------------------------------------------------
+pull the centos base image :  FROM centos:latest
+Install java	           :  RUN yum install java -y
+directory /opt/tomcat      :  RUN mkdir /opt/tomcat
+Make /opt/tomcat as currect:  WORKDIR /opt/tomcat
+download tomcat            :  ADD https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.70/bin/apache-tomcat-9.0.70.tar.gz
+Untar the download files   :  RUN tar -xvzf  apache-tomcat-9.0.70.tar.gz
+move the untar files to 
+/opt/tomcat:               : RUN mv apache-tomcat-9.0.70/* /opt/tomcat
+
+open the 80 port	           : EXPOSE 80
+
+start the tomcat on container creation:
+                           : CMD ["/opt/tomcat/bin/catalina.sh","run"]
+======================================================================
+                            
